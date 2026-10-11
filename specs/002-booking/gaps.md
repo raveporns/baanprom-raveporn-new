@@ -1,0 +1,13 @@
+# Gap Analysis - SPEC-BOOKING
+
+| GAP-ID | พบตอน | สาเหตุ | รายละเอียด | แก้อย่างไร | REQ/AC ที่กระทบ |
+|---|---|---|---|---|---|
+| GAP-001 | ผลตรวจ AC | ความไม่ครบของ artifact acceptance criteria | ไฟล์ feature.feature ยังเป็น template ไม่ใช่ scenario จริงสำหรับ AC-07-01 ถึง AC-07-10 ดังนั้นการยืนยันผ่าน Gherkin ยังไม่สมบูรณ์ แม้ automated tests ผ่านบางส่วน | ปรับ feature.feature ให้เป็น scenario จริงตาม user journey ทุก AC พร้อมความครอบคลุมทั้ง happy path / exception / validation | REQ-FN-008, REQ-FN-041, REQ-FN-012, REQ-IF-001, REQ-IF-005, REQ-QA-003, REQ-SEC-004, REQ-PRV-002, REQ-DAT-002 / AC-07-01 ถึง AC-07-10 |
+| GAP-002 | AC-07-03 | ตรวจได้แค่สร้าง Job และ history แต่ไม่ยืนยันการแจ้ง | ใน ac-results ระบุว่า test_AC_07_03_create_confirmed_job_and_history ตรวจการสร้าง Job/history เท่านั้น แต่ไม่ได้ยืนยัน “แจ้งลูกค้าและช่างภายใน 60 วินาที” ตาม requirement | เพิ่ม integration test สำหรับระบบส่งข้อความ ตรวจว่า customer และ technician ได้รับ notification ภายใน 60 วินาที หลัง job created | REQ-FN-012 / AC-07-03 |
+| GAP-003 | AC-07-08 | ข้อจำกัดของ performance test | ข้อมูลใน ac-results ระบุวัด p95 จาก 50 request ตามลำดับ และ frontend ทดสอบคำนวณด้วยข้อมูลตัวอย่าง ไม่ได้ยืนยัน “ที่ผู้ใช้พร้อมกัน 500 คน” ตาม requirement | สร้าง load test ที่จำลอง concurrency 500 user และ assert p95 < 2 วินาที พร้อมเก็บผลจริงจาก backend | REQ-QA-003 / AC-07-08 |
+| GAP-004 | AC-07-10 | ไม่มี test สำหรับ decision table refund | ac-results ระบุว่า AC-07-10 ยังไม่ได้ทดสอบ ไม่มีผลตรวจสำหรับ BR-01 ครบทุกแถว และ Q-14 ยังไม่ resolved | เพิ่ม scenario ใน feature file และ automated test ครอบคลุม decision table BR-01 ทุก rule R1–R6 พร้อมกรณี Q-14 / R3 | REQ-BR-001 / AC-07-10 |
+| GAP-005 | การตรวจสอบ integration จริง | สภาพแวดล้อมและ dependency ยังไม่พร้อม | PostgreSQL container เริ่มไม่ได้เพราะ port 5432 ถูกใช้งาน และ ผลตรวจไม่ได้ยืนยันการทำงานกับ Payment Gateway หรือระบบส่งข้อความจริง | ปรับ environment / compose และเพิ่ม contract/integration test กับ gateway + messaging ให้เป็นสภาพแวดล้อมจริงก่อน sign-off | REQ-IF-001, REQ-IF-005, REQ-FN-012 / AC-07-03, AC-07-05, AC-07-06, AC-07-07 |
+| GAP-006 | ผลตรวจยังเป็น “ผ่านบางส่วน” | ขาดหลักฐานเชิงปริมาณสำหรับสรุปสเตจ | สรุปผลระบุว่า backend/frontend tests ผ่าน แต่ยังมี AC-07-03, AC-07-08 และ AC-07-10 ที่ขาดหลักฐานจึงไม่ใช่ sign-off ที่สมบูรณ์ | ต้องมี evidence ปลายทางครบทุก AC ก่อนประกาศว่าผ่าน Baseline รวมถึง load test, notification SLA และ refund table | REQ-FN-012, REQ-QA-003, REQ-BR-001 / AC-07-03, AC-07-08, AC-07-10 |
+
+## สรุป
+ระบบมีความคืบหน้าในฐานะ “โครงสร้างหลักทำงานได้” แต่ยังไม่พอให้ถือว่า requirement booking ผ่านตาม spec อย่างสมบูรณ์ เพราะหลักฐานยังขาดใน 3 ส่วนสำคัญ: การแจ้งภายใน 60 วินาที, การโหลด 500 user ตาม SLA, และ refund decision table ครบทุกแถว.

@@ -30,3 +30,5 @@ AI จะเพิ่มบันทึกให้เองเมื่อใ�
 
 
 ## #12 | 2569-10-11 | Bash + filesystem | /implement T-11 specs/002-booking/tasks.md | สร้างหน้า booking integration แบบต่อ API จริง และเพิ่มการตรวจประสิทธิภาพ p95 สำหรับ AC-07-08 เพื่อให้ T-11 ครอบคลุมครบทุก AC ใน spec | T-11 เสร็จแล้ว; backend validation ใช้ `python -m pytest tests/test_booking_flow.py -q` และผ่าน 8 tests, while `frontend/src/pages/BookingPage.integration.jsx` ทำงานต่อ FastAPI จริงที่ `/api/v1/...` และ `frontend/src/integration/bookingFlow.test.jsx` ตรวจความคงที่ของ p95 ให้ต่ำกว่า 2 วินาที | AI เดา: ไม่มีคำถามเปิดเพิ่มเติม เพราะ spec/task ระบุชัดเจนว่าต้องตรวจทุก AC และ p95 ของ search/confirm ต้องต่ำกว่า 2 วินาที
+
+## #13 | 2569-10-11 | Chat + filesystem | สรุปผลการรันลง specs/002-booking/ac-results.md | รัน backend tests 15 รายการ, frontend tests 2 รายการ, build และตรวจ HTTP health ของ frontend/backend แล้วบันทึกผลแยก AC พร้อมข้อจำกัด | ทีมขอให้สรุปผลลง ac-results.md; บันทึก AC-07-03 และ AC-07-08 ว่าผ่านบางส่วน และ AC-07-10 ว่ายังไม่ได้ทดสอบตามหลักฐานที่มี | AI เดา: ไม่มี; แยกผล automated tests ออกจากการยืนยัน AC จริง เนื่องจาก feature.feature ยังเป็น template และ PostgreSQL จริงยังเริ่มไม่ได้
